@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-rubyapp
+  labels:
+    app: rubyapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: rubyapp
+  template:
+    metadata:
+      labels:
+        app: rubyapp
+    spec:
+      containers:
+        - name: rubyapp
+          image: "{{ .Values.rubyapp.image.repository }}:{{ .Values.rubyapp.image.tag }}"
+          imagePullPolicy: {{ .Values.rubyapp.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              value: "postgres://$(postgres-user):$(postgres-password)@{{ .Release.Name }}-postgres:5432/{{ .Values.postgres.db }}"
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-rubyapp
+spec:
+  selector:
+    app: rubyapp
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort
