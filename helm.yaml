@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: global-helm
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: helm
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://victoria-oa.github.io/rubyappp-helm/
+    chart: ruby-web
+    targetRevision: 0.1.0
+    helm:
+      values: |
+        replicaCount: 1
+        postgres:
+          db: mydatabase
+          image:
+            repository: oluwasanmivic123/docker_db
+            tag: latest
+            pullPolicy: IfNotPresent
+        rubyapp:
+          image:
+            repository: oluwasanmivic123/docker_web
+            tag: latest
+            pullPolicy: IfNotPresent
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
