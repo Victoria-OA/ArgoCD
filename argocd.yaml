@@ -7,11 +7,11 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: apache
+    namespace: default
     server: https://kubernetes.default.svc
   project: default
   source:
-    chart: apache-ingress
+    chart: apache
     repoURL: https://charts.bitnami.com/bitnami
     targetRevision: 0.14.0
   syncPolicy:
