@@ -14,7 +14,7 @@ spec:
     chart: apache
     repoURL: https://charts.bitnami.com/bitnami
     path: .
-    targetRevision: 0.14.0
+    targetRevision: 10.5.2
   syncPolicy:
     automated:
       prune: true
